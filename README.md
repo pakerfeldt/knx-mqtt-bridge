@@ -53,11 +53,6 @@ Package | Version | Dev
 [winston](https://www.npmjs.com/package/winston) | 3.0.0 | ✖
 [xml-js](https://www.npmjs.com/package/xml-js) | 1.6.4 | ✖
 
-
-## Author
-
-Patrik Åkerfeldt <patrik.akerfeldt@gmail.com>
-
 ## License
 
  - **Apache-2.0** : http://opensource.org/licenses/Apache-2.0
