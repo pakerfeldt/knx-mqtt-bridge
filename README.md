@@ -13,15 +13,15 @@ A KNX / MQTT bridge
 Bridges KNX and MQTT using the [knx.js library](https://bitbucket.org/ekarak/knx.js/src/master/).
 A Dockerfile is also provided for creating a working docker container.
 
-KNX events are written to the MQTT topic knx/x/y/z where x/y/z is the group address.
-Writing to KNX is done by sending an MQTT message to topic knx/x/y/z/write with
-the value to write as the message. Again x/y/z is the group address to write to.
-The bridge also supports reading of values by sending an MQTT message to
-knx/x/y/z/read.
+KNX events are written to the MQTT topic `knx/x/y/z` where `x/y/z` is the group
+address. Writing to KNX is done by sending an MQTT message to topic
+`knx/x/y/z/write` with the value to write as the message. Again `x/y/z` is the
+group address to write to. The bridge also supports reading of values by sending
+an MQTT message to `knx/x/y/z/read`.
 
 It's highly recommended to provide an ETS export of all the group addresses and
 their corresponding datapoint types. By doing this, values will be automatically
-converted from and to it's raw type. If you are reading or writing to an unknown
+converted from and to its raw type. If you are reading or writing to an unknown
 group address the raw byte buffer is what's being communicated and you would
 need to convert back and forth yourself.
 
