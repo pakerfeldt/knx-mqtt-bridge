@@ -1,6 +1,6 @@
 {
   "name": "knx-mqtt-bridge",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A KNX / MQTT bridge",
   "keywords": [
     "knx",
@@ -30,6 +30,9 @@
   "main": "knx-mqtt.js",
   "scripts": {
     "start": "node knx-mqtt.js"
+  },
+  "bin" : {
+    "knx-mqtt-bridge": "knx-mqtt.js"
   },
   "license": "Apache-2.0",
   "homepage": "https://github.com/pakerfeldt/knx-mqtt-bridge/"
