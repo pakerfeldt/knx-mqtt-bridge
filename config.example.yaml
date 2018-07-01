@@ -3,7 +3,7 @@
 loglevel: 'warn'
 knx:
     # ETS exported group addresses
-    gadFile: 'knx.xml'
+    etsExport: 'knx.xml'
     # Configuration passed to the KNX library
     options:
 mqtt:

@@ -27,7 +27,7 @@ const logger = createLogger({
     //new winston.transports.Console({ format: winston.format.simple() })
   //]
 });
-let groupAddresses = ets.parse(config.knx.gadFile, logger) || {};
+let groupAddresses = ets.parse(config.knx.etsExport, logger) || {};
 
 let mqttClient  = mqtt.connect(config.mqtt.url, config.mqtt.options);
 
@@ -88,7 +88,3 @@ let knxConnection = knx.Connection(Object.assign({
              onKnxEvent(evt, dst, value);
       }
   }}, config.knx.options));
-
-let handleKeyPressed = function (key) {
-    logger.silly('%s pressed', key);
-}

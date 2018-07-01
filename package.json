@@ -1,6 +1,6 @@
 {
   "name": "knx-mqtt-bridge",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A KNX / MQTT bridge",
   "keywords": [
     "knx",
@@ -27,12 +27,12 @@
   "bugs": {
     "url": "https://github.com/pakerfeldt/knx-mqtt-bridge/issues"
   },
-  "main": "knx-mqtt.js",
+  "main": "src/knx-mqtt.js",
   "scripts": {
-    "start": "node knx-mqtt.js"
+    "start": "node src/knx-mqtt.js"
   },
   "bin" : {
-    "knx-mqtt-bridge": "knx-mqtt.js"
+    "knx-mqtt-bridge": "src/knx-mqtt.js"
   },
   "license": "Apache-2.0",
   "homepage": "https://github.com/pakerfeldt/knx-mqtt-bridge/"
