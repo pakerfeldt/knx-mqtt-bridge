@@ -2,7 +2,7 @@ const yaml = require('js-yaml');
 const fs   = require('fs');
 
 exports.parse = function () {
-    const file = './config.yaml';
+    const file = process.env.KNX_MQTT_CONFIG || './config.yaml';
     if (fs.existsSync(file)) {
         try {
           return yaml.safeLoad(fs.readFileSync(file, 'utf8'));
