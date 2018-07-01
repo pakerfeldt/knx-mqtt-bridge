@@ -1,0 +1,17 @@
+
+# One of 'error', 'warn', 'info', 'verbose', debug', 'silly'
+loglevel: 'warn'
+knx:
+    # ETS exported group addresses
+    gadFile: 'knx.xml'
+    # Configuration passed to the KNX library
+    options:
+mqtt:
+    # URL to MQTT broker
+    url: 'mqtt://localhost'
+    # Configuration passed to the MQTT library
+    options:
+        username: 'mqtt_username'
+        password: 'mqtt_password'
+    # Prefix to mqtt topic
+    topicPrefix: 'knx'
