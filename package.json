@@ -7,11 +7,12 @@
     "mqtt"
   ],
   "dependencies": {
+    "js-yaml": "3.12.0",
     "knx": ">=2.3.0",
     "mqtt": "^2.18.1",
-    "xml-js": "1.6.4",
-    "js-yaml": "3.12.0",
-    "winston": "3.0.0"
+    "node-readme": "^0.1.9",
+    "winston": "3.0.0",
+    "xml-js": "1.6.4"
   },
   "engines": {
     "node": ">=10"
@@ -29,9 +30,9 @@
   },
   "main": "src/knx-mqtt.js",
   "scripts": {
-    "start": "node src/knx-mqtt.js"
+    "start": "node src/knx-mqtt.js",
   },
-  "bin" : {
+  "bin": {
     "knx-mqtt-bridge": "src/knx-mqtt.js"
   },
   "license": "Apache-2.0",
