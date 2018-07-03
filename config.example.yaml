@@ -1,6 +1,13 @@
 
 # One of 'error', 'warn', 'info', 'verbose', debug', 'silly'
 loglevel: 'warn'
+# One of converted, raw, full
+#    convert - converts any known group addresses to its value
+#    raw - leaves all values unconverted with its raw buffer
+#    full - a json object containing raw value + converted value and unit type for known group addresses
+messageType: convert
+# Ignore unknown group addresses
+ignoreUnknownGroupAddresses: false
 knx:
     # ETS exported group addresses
     etsExport: 'knx.xml'

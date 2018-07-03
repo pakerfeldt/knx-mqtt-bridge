@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 
+const c = require('./constants.js');
 const knx = require('knx');
 const mqtt = require('mqtt');
 const { createLogger, format, transports } = require('winston');
@@ -27,6 +28,8 @@ const logger = createLogger({
     //new winston.transports.Console({ format: winston.format.simple() })
   //]
 });
+const messageType = require('./messagetype.js').parse(config.messageType, logger);
+
 let groupAddresses = ets.parse(config.knx.etsExport, logger) || {};
 
 let mqttClient  = mqtt.connect(config.mqtt.url, config.mqtt.options);
@@ -60,16 +63,34 @@ mqttClient.on('message', function (topic, message) {
 });
 
 let onKnxEvent = function (evt, dst, value, gad) {
-    if (!Buffer.isBuffer(value)) {
-        value = "" + value;
+    let mqttMessage = value;
+    if (messageType === c.MESSAGE_TYPE_CONVERT) {
+        if (!Buffer.isBuffer(value)) {
+            mqttMessage = "" + value;
+        }
+    } else if (messageType === c.MESSAGE_TYPE_RAW) {
+        if (gad !== undefined) {
+            mqttMessage = gad.endpoint.dpt.formatAPDU(value);
+        }
+    } else if (messageType === c.MESSAGE_TYPE_FULL) {
+        let mqttObject = {
+            raw: !Buffer.isBuffer(value) && gad !== undefined ? gad.endpoint.dpt.formatAPDU(value) : value
+        }
+        if (gad !== undefined) {
+            mqttObject.unit = gad.unit;
+            mqttObject.value = value;
+        }
+        mqttMessage = JSON.stringify(mqttObject);
+    } else {
+        logger.error('Configured message type unknown. This should never happen and indicates a bug in the software.');
+        return;
     }
+
     logger.verbose("%s **** KNX EVENT: %s, dst: %s, value: %j",
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
-      evt, dst, value);
-      if (value === Object(value)) {
-          value = JSON.stringify(value);
-      }
-      mqttClient.publish(topicPrefix + dst, value);
+      evt, dst, mqttMessage);
+
+      mqttClient.publish(topicPrefix + dst, mqttMessage);
 }
 
 let knxConnection = knx.Connection(Object.assign({
@@ -88,6 +109,8 @@ let knxConnection = knx.Connection(Object.assign({
         }
       },
       event: function (evt, src, dst, value) {
-             onKnxEvent(evt, dst, value);
+          if (!(config.ignoreUnknownGroupAddresses || groupAddresses.hasOwnProperty(dst))) {
+              onKnxEvent(evt, dst, value);
+          }
       }
   }}, config.knx.options));
