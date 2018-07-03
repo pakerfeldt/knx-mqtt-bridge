@@ -1,0 +1,5 @@
+node_modules/
+sync-to-server.sh
+config.yaml
+knx.xml
+package-lock.json
