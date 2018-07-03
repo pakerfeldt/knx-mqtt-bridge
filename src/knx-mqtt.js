@@ -60,6 +60,9 @@ mqttClient.on('message', function (topic, message) {
 });
 
 let onKnxEvent = function (evt, dst, value, gad) {
+    if (!Buffer.isBuffer(value)) {
+        value = "" + value;
+    }
     logger.verbose("%s **** KNX EVENT: %s, dst: %s, value: %j",
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
       evt, dst, value);
