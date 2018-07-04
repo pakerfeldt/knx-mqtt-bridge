@@ -8,7 +8,7 @@ const { createLogger, format, transports } = require('winston');
 const ets = require('./ets-xml');
 const config = require('./config.js').parse();
 const topicPrefix = config.mqtt.topicPrefix + (config.mqtt.topicPrefix.endsWith('/') ? '' : '/');
-const gadRegExp = new RegExp((topicPrefix || 'knx/') + '(\\d+)\/(\\d+)\/(\\d+)\/(\\w+)');
+const gadRegExp = new RegExp((topicPrefix || 'knx/') + '(\\d+)\/(\\d+)\/(\\d+)\/(\\w+)(\/([\\w\\d]+))?');
 const logger = createLogger({
   level: config.loglevel,
   format: format.combine(
@@ -37,19 +37,36 @@ let mqttClient  = mqtt.connect(config.mqtt.url, config.mqtt.options);
 mqttClient.on('connect', function () {
   logger.info('MQTT connected');
   mqttClient.subscribe(topicPrefix + '+/+/+/+');
+  mqttClient.subscribe(topicPrefix + '+/+/+/+/+');
 });
 
 mqttClient.on('message', function (topic, message) {
-    logger.verbose('Received MQTT message on topic %s with value %s', topic, message);
+    logger.silly('Received MQTT message on topic %s with value %s', topic, message);
     let gadArray = gadRegExp.exec(topic);
     let gad = gadArray[1] + "/" + gadArray[2] + "/" + gadArray[3];
     let command = gadArray[4];
-    logger.silly('Parsed MQTT message into gad %s with command %s',gad, command);
-    if (command === 'write') {
+    let dpt = gadArray.length >= 7 ? gadArray[6] : undefined;
+    let parsedMessage = JSON.parse(message.toString('utf8'));
+    let isBuffer = parsedMessage !== null && typeof parsedMessage === 'object';
+    logger.verbose('Parsed MQTT message into gad %s with command %s, value %j and dpt %s', gad, command, parsedMessage, dpt);
+    if (command === 'write' && isBuffer) {
+        let bitLength = getBitLength(dpt);
+        let bufferMessage;
+        try {
+            bufferMessage = Buffer.from(parsedMessage.data);
+            knxConnection.writeRaw(gad, bufferMessage, bitLength);
+        } catch (err) {
+            logger.error('Could not parse buffer %j', parsedMessage);
+        }
+    } else if (command === 'write' && !isBuffer) {
         if (groupAddresses.hasOwnProperty(gad)) {
-            groupAddresses[gad].endpoint.write(message);
+            try {
+                groupAddresses[gad].endpoint.write(parsedMessage);
+            } catch (err) {
+                logger.error('Could not write message %j to group address %s, err: %j', parsedMessage, gad, err);
+            }
         } else {
-            // TODO, support raw buffer writes
+            logger.error('Cannot write non-buffer value do an unknown group address %s. Don\'t know how to convert', gad);
         }
     } else if (command === 'read') {
         if (groupAddresses.hasOwnProperty(gad)) {
@@ -114,3 +131,15 @@ let knxConnection = knx.Connection(Object.assign({
           }
       }
   }}, config.knx.options));
+
+  let getBitLength = function(dpt) {
+      if (dpt === 'dpt1') {
+          return 1;
+      } else if (dpt === 'dpt2') {
+          return 2;
+      } else if (dpt === 'dpt3') {
+          return 4;
+      } else {
+          return undefined;
+      }
+  }

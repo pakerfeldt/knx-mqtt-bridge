@@ -43,6 +43,20 @@ try to connect to a KNX router using the multicast address. If you prefer
 unicast you can add `ipAddr` and `ipPort` to the options block under knx in the
 configuration file.
 
+## Usage
+Writing values to a mapped group address is straight forward. Send a message to
+`knx/x/y/z/write` with the value to write. However, if the group address is not
+mapped to a datapoint you can still write to that group address but you would
+have to provide the raw buffer yourself. Again, you can still write to
+`knx/x/y/z/write`, however knx-mqtt-bridge need to know the datapoint type of
+the address you are writing to for proper conversion. This is especially true
+for dpt1, dpt2 and dpt3. In this case you pass that information to the topic,
+like so: `knx/x/y/z/write/dpt1`. For instance, if you would want to send a
+1/true to light switch using `mosquitto_pub` it could look something like this:
+`mosquitto_pub -h localhost -t 'knx/1/1/65/write/dpt1' -m "{\"type\":\"Buffer\",\"data\":[1]}"`.
+For any datapoint other than dpt1, dpt2 or dpt3 you don't need to pass that
+additional information.
+
 ## Dependencies
 
 Package | Version | Dev
