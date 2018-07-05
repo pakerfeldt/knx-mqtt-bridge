@@ -94,6 +94,7 @@ let onKnxEvent = function (evt, dst, value, gad) {
             raw: !Buffer.isBuffer(value) && gad !== undefined ? gad.endpoint.dpt.formatAPDU(value) : value
         }
         if (gad !== undefined) {
+            mqttObject.name = gad.name;
             mqttObject.unit = gad.unit;
             mqttObject.value = value;
         }
