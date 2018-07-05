@@ -32,7 +32,7 @@ exports.parse = function (knxGadFile, logger) {
             }
         }
     } catch (err) {
-        logger.warn('Could not read ETS export file %s', knxGadFile);
+        logger.warn('Could not read ETS export file %s, %s', knxGadFile, err);
     }
     return addresses;
 }
