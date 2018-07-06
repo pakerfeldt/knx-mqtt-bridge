@@ -80,23 +80,17 @@ mqttClient.on('message', function (topic, message) {
 });
 
 let onKnxEvent = function (evt, dst, value, gad) {
+    logger.silly("onKnxEvent %s, %j", dst, value);
     let mqttMessage = value;
-    if (messageType === c.MESSAGE_TYPE_CONVERT) {
-        if (!Buffer.isBuffer(value)) {
-            mqttMessage = "" + value;
-        }
-    } else if (messageType === c.MESSAGE_TYPE_RAW) {
-        if (gad !== undefined) {
-            mqttMessage = gad.endpoint.dpt.formatAPDU(value);
-        }
+    if (messageType === c.MESSAGE_TYPE_VALUE_ONLY) {
+        mqttMessage = !Buffer.isBuffer(value) ? "" + value : value
     } else if (messageType === c.MESSAGE_TYPE_FULL) {
         let mqttObject = {
-            raw: !Buffer.isBuffer(value) && gad !== undefined ? gad.endpoint.dpt.formatAPDU(value) : value
+            value: !Buffer.isBuffer(value) ? "" + value : value
         }
         if (gad !== undefined) {
             mqttObject.name = gad.name;
             mqttObject.unit = gad.unit;
-            mqttObject.value = value;
         }
         mqttMessage = JSON.stringify(mqttObject);
     } else {

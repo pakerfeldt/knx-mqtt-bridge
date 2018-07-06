@@ -1,12 +1,10 @@
 exports.parse = function(type, logger) {
-    if (type === 'convert') {
+    if (type === 'value-only') {
         return 0;
-    } else if (type === 'raw') {
-        return 1;
     } else if (type === 'full') {
-        return 2;
+        return 1;
     } else {
-        logger.warn('Unknown message type %s. Using \'convert\'', type);
+        logger.warn('Unknown message type %s. Using \'value-only\'', type);
         return 0;
     }
 }
