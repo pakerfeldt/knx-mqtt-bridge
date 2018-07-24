@@ -80,7 +80,11 @@ mqttClient.on('message', function (topic, message) {
 });
 
 let onKnxEvent = function (evt, dst, value, gad) {
-    logger.silly("onKnxEvent %s, %j", dst, value);
+    logger.silly("onKnxEvent %s, %s, %j", evt, dst, value);
+    if (evt !== 'GroupValue_Write') {
+        return;
+    }
+
     let mqttMessage = value;
     if (messageType === c.MESSAGE_TYPE_VALUE_ONLY) {
         mqttMessage = !Buffer.isBuffer(value) ? "" + value : value
@@ -102,7 +106,7 @@ let onKnxEvent = function (evt, dst, value, gad) {
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
       evt, dst, mqttMessage);
 
-      mqttClient.publish(topicPrefix + dst, mqttMessage);
+    mqttClient.publish(topicPrefix + dst, mqttMessage);
 }
 
 let knxConnection = knx.Connection(Object.assign({
