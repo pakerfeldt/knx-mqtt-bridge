@@ -81,7 +81,7 @@ mqttClient.on('message', function (topic, message) {
 
 let onKnxEvent = function (evt, dst, value, gad) {
     logger.silly("onKnxEvent %s, %s, %j", evt, dst, value);
-    if (evt !== 'GroupValue_Write') {
+    if (evt !== 'GroupValue_Write' && evt !== 'GroupValue_Response') {
         return;
     }
 
