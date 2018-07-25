@@ -46,7 +46,13 @@ mqttClient.on('message', function (topic, message) {
     let gad = gadArray[1] + "/" + gadArray[2] + "/" + gadArray[3];
     let command = gadArray[4];
     let dpt = gadArray.length >= 7 ? gadArray[6] : undefined;
-    let parsedMessage = JSON.parse(message.toString('utf8'));
+    let parsedMessage;
+    try {
+        parsedMessage = message === undefined ? null : JSON.parse(message.toString('utf8'));
+    } catch (err) {
+        logger.warn('Could not parse message %j', message);
+        parsedMessage = null;
+    }
     let isBuffer = parsedMessage !== null && typeof parsedMessage === 'object';
     logger.verbose('Parsed MQTT message into gad %s with command %s, value %j and dpt %s', gad, command, parsedMessage, dpt);
     if (command === 'write' && isBuffer) {
