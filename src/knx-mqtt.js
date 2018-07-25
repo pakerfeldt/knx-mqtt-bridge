@@ -50,7 +50,6 @@ mqttClient.on('message', function (topic, message) {
     try {
         parsedMessage = message === undefined ? null : JSON.parse(message.toString('utf8'));
     } catch (err) {
-        logger.warn('Could not parse message %j', message);
         parsedMessage = null;
     }
     let isBuffer = parsedMessage !== null && typeof parsedMessage === 'object';
@@ -90,8 +89,8 @@ let onKnxEvent = function (evt, dst, value, gad) {
     if (evt !== 'GroupValue_Write' && evt !== 'GroupValue_Response') {
         return;
     }
-    let topicSuffix = evt === 'GroupValue_Response' ? '/response' : '';
 
+    let isResponse = evt === 'GroupValue_Response';
     let mqttMessage = value;
     if (messageType === c.MESSAGE_TYPE_VALUE_ONLY) {
         mqttMessage = !Buffer.isBuffer(value) ? "" + value : value
@@ -103,6 +102,9 @@ let onKnxEvent = function (evt, dst, value, gad) {
             mqttObject.name = gad.name;
             mqttObject.unit = gad.unit;
         }
+        if (isResponse) {
+            mqttObject.response = true;
+        }
         mqttMessage = JSON.stringify(mqttObject);
     } else {
         logger.error('Configured message type unknown. This should never happen and indicates a bug in the software.');
@@ -113,7 +115,7 @@ let onKnxEvent = function (evt, dst, value, gad) {
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
       evt, dst, mqttMessage);
 
-    mqttClient.publish(topicPrefix + dst + topicSuffix, mqttMessage);
+    mqttClient.publish(topicPrefix + dst, mqttMessage);
 }
 
 let knxConnection = knx.Connection(Object.assign({

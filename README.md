@@ -17,11 +17,7 @@ KNX events are written to the MQTT topic `knx/x/y/z` where `x/y/z` is the group
 address. Writing to KNX is done by sending an MQTT message to topic
 `knx/x/y/z/write` with the value to write as the message. Again `x/y/z` is the
 group address to write to. The bridge also supports reading of values by sending
-an MQTT message to `knx/x/y/z/read`. A read response is sent to
-`knx/x/y/z/response` so that responses can be distinguished from regular writes.
-However, it's currently not possible to distinguish between different read
-requests do know if the particular response came from you request.
-
+an MQTT message to `knx/x/y/z/read`.
 
 It's highly recommended to provide an ETS export of all the group addresses and
 their corresponding datapoint types. By doing this, values will be automatically
