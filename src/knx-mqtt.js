@@ -90,6 +90,7 @@ let onKnxEvent = function (evt, dst, value, gad) {
     if (evt !== 'GroupValue_Write' && evt !== 'GroupValue_Response') {
         return;
     }
+    let topicSuffix = evt === 'GroupValue_Response' ? '/response' : '';
 
     let mqttMessage = value;
     if (messageType === c.MESSAGE_TYPE_VALUE_ONLY) {
@@ -112,7 +113,7 @@ let onKnxEvent = function (evt, dst, value, gad) {
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
       evt, dst, mqttMessage);
 
-    mqttClient.publish(topicPrefix + dst, mqttMessage);
+    mqttClient.publish(topicPrefix + dst + topicSuffix, mqttMessage);
 }
 
 let knxConnection = knx.Connection(Object.assign({
