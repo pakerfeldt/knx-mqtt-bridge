@@ -1,6 +1,6 @@
 {
   "name": "knx-mqtt-bridge",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "A KNX / MQTT bridge",
   "keywords": [
     "knx",
