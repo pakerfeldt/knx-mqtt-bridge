@@ -68,7 +68,7 @@ mqttClient.on('message', function (topic, message) {
             try {
                 groupAddresses[gad].endpoint.write(parsedMessage);
             } catch (err) {
-                logger.error('Could not write message %j to group address %s, err: %j', parsedMessage, gad, err);
+                logger.error('Could not write message %j to group address %s, err: %s', parsedMessage, gad, err);
             }
         } else {
             logger.error('Cannot write non-buffer value do an unknown group address %s. Don\'t know how to convert', gad);
@@ -126,7 +126,7 @@ let knxConnection = knx.Connection(Object.assign({
            if (groupAddresses.hasOwnProperty(key)) {
                let endpoint = new knx.Datapoint({ga: key, dpt: groupAddresses[key].dpt}, knxConnection);
                groupAddresses[key].endpoint = endpoint;
-               groupAddresses[key].unit = endpoint.dpt.subtype.unit || '';
+               groupAddresses[key].unit = endpoint.dpt.subtype !== undefined ? endpoint.dpt.subtype.unit || '' : '';
                groupAddresses[key].endpoint.on('event', function(evt, value) {
                    onKnxEvent(evt, key, value, groupAddresses[key]);
                });
