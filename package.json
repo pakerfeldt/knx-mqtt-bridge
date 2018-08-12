@@ -14,7 +14,7 @@
     "xml-js": "1.6.4"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=8"
   },
   "repository": {
     "type": "git",
