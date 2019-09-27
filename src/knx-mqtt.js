@@ -115,7 +115,9 @@ let onKnxEvent = function (evt, dst, value, gad) {
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
       evt, dst, mqttMessage);
 
-    mqttClient.publish(topicPrefix + dst, mqttMessage);
+    mqttClient.publish(topicPrefix + dst, mqttMessage, {
+        retain: config.mqtt.retain || false
+    });
 }
 
 let knxConnection = knx.Connection(Object.assign({
