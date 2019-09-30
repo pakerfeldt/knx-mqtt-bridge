@@ -18,7 +18,8 @@ exports.parse = function () {
             },
             mqtt: {
                 url: 'mqtt://localhost',
-                topicPrefix: 'knx'
+                topicPrefix: 'knx',
+                retain: false
             }
         }
     }

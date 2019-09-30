@@ -21,3 +21,5 @@ mqtt:
         password: 'mqtt_password'
     # Prefix to mqtt topic
     topicPrefix: 'knx'
+    # Set retain flag on messages
+    retain: false
