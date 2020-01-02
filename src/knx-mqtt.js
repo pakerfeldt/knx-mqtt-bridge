@@ -126,6 +126,12 @@ let knxConnection = knx.Connection(Object.assign({
        logger.info('KNX connected');
         for (let key in groupAddresses) {
            if (groupAddresses.hasOwnProperty(key)) {
+               if (groupAddresses[key].endpoint) {
+                 // We already assigned an endpoint previously and there is no need to do it again here.
+                 // This will avoid a possible duplication of messages caused by multiple bound event handles for the same group address.
+                 // See https://github.com/pakerfeldt/knx-mqtt-bridge/issues/6 for further details why we really should break here.
+                 continue;
+               }
                let endpoint = new knx.Datapoint({ga: key, dpt: groupAddresses[key].dpt}, knxConnection);
                groupAddresses[key].endpoint = endpoint;
                groupAddresses[key].unit = endpoint.dpt.subtype !== undefined ? endpoint.dpt.subtype.unit || '' : '';
