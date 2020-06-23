@@ -93,11 +93,9 @@ let onKnxEvent = function (evt, dst, value, gad) {
     let isResponse = evt === 'GroupValue_Response';
     let mqttMessage = value;
     if (messageType === c.MESSAGE_TYPE_VALUE_ONLY) {
-        mqttMessage = !Buffer.isBuffer(value) ? "" + value : value
+        mqttMessage = !Buffer.isBuffer(value) ? String(value) : value
     } else if (messageType === c.MESSAGE_TYPE_FULL) {
-        let mqttObject = {
-            value: !Buffer.isBuffer(value) ? "" + value : value
-        }
+        let mqttObject = { value }
         if (gad !== undefined) {
             mqttObject.name = gad.name;
             mqttObject.unit = gad.unit;
