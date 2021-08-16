@@ -1,25 +1,39 @@
-
+---
 # One of 'error', 'warn', 'info', 'verbose', debug', 'silly'
-loglevel: 'warn'
+loglevel: 'silly'
+
 # One of value-only, full
 #    value-only - converts any known group addresses to its value
 #    full - a json object containing value. Additionally also name and unit type for known group addresses.
-messageType: value-only
+messageType: full
+
 # Ignore unknown group addresses
 ignoreUnknownGroupAddresses: false
+
 knx:
-    # ETS exported group addresses
-    etsExport: 'knx.xml'
-    # Configuration passed to the KNX library
-    options:
+  # ETS exported group addresses
+  etsExport: 'knx.xml'
+
+  # Configuration passed to the KNX library
+  options:
+    # IP address of your Ethernet-KNX interface
+    ipAddr: '10.1.1.220'
+    # KNX physical address we'd like to use
+    physAddr: '15.15.15'
+
 mqtt:
-    # URL to MQTT broker
-    url: 'mqtt://localhost'
-    # Configuration passed to the MQTT library
-    options:
-        username: 'mqtt_username'
-        password: 'mqtt_password'
-    # Prefix to mqtt topic
-    topicPrefix: 'knx'
-    # Set retain flag on messages
-    retain: false
+  # URL to MQTT broker
+  url: 'mqtt://localhost'
+
+  # Configuration passed to the MQTT library
+  options:
+    # username: 'mqtt_username'
+    # password: 'mqtt_password'
+    # key: 'keyfile.key'
+    # cert: 'certificate.crt'
+    # ca: 'certificate-authority.crt'
+
+  # Prefix to MQTT topic
+  topicPrefix: 'knx'
+  # Set retain flag on messages
+  retain: false
