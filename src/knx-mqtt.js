@@ -50,7 +50,7 @@ mqttClient.on('message', function (topic, message) {
     try {
         parsedMessage = message === undefined ? null : JSON.parse(message.toString('utf8'));
     } catch (err) {
-        parsedMessage = null;
+        parsedMessage = message.toString('utf8');
     }
     let isBuffer = parsedMessage !== null && typeof parsedMessage === 'object';
     logger.verbose('Parsed MQTT message into gad %s with command %s, value %j and dpt %s', gad, command, parsedMessage, dpt);
