@@ -4,6 +4,7 @@ const dptRegExp = new RegExp('DPS?T\\-(\\d+)(\\-(\\d+))?');
 
 exports.parse = function (knxGadFile, logger) {
     var addresses = {};
+    var names = {};
     try {
         var data = fs.readFileSync(knxGadFile);
         var ets = convert.xml2js(data);
@@ -30,11 +31,18 @@ exports.parse = function (knxGadFile, logger) {
                                     dpt = 'DPT' + match[1] + (match[3] !== undefined ? '.' + match[3].padStart(3,0) : '');
                                 }
                             }
+                            
                             addresses[subs[k].attributes.Address] = {
-                                "name" : subs[k].attributes.Name,
-                                "dpt" : dpt,
                                 "main" : mains[i].attributes.Name,
-                                "middle" : middles[j].attributes.Name
+                                "middle" : middles[j].attributes.Name,
+                                "name" : subs[k].attributes.Name,
+                                "dpt" : dpt
+                            }
+                            let gad = subs[k].attributes.Address.match(/(\d+)\/(\d+)\/(\d+)/);
+                            names[`${mains[i].attributes.Name}/${middles[j].attributes.Name}/${subs[k].attributes.Name}`] = {
+                                "main" : gad[1],
+                                "middle" : gad[2],
+                                "name" : gad[3]
                             }
                         }
                     }
@@ -44,5 +52,5 @@ exports.parse = function (knxGadFile, logger) {
     } catch (err) {
         logger.warn('Could not read ETS export file %s, %s', knxGadFile, err);
     }
-    return addresses;
+    return {groupAddresses: addresses, groupNames: names};
 }

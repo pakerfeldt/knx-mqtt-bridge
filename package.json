@@ -1,6 +1,6 @@
 {
   "name": "knx-mqtt-bridge",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A KNX / MQTT bridge",
   "keywords": [
     "knx",
@@ -8,8 +8,8 @@
   ],
   "dependencies": {
     "js-yaml": "3.13.1",
-    "knx": ">=2.3.0",
-    "mqtt": "^2.18.1",
+    "knx": ">=2.5.4",
+    "mqtt": "5.0.0",
     "winston": "3.0.0",
     "xml-js": "1.6.4"
   },

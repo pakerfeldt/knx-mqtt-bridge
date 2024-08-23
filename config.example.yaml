@@ -37,3 +37,7 @@ mqtt:
   topicPrefix: 'knx'
   # Set retain flag on messages
   retain: false
+  # Emit values using group address
+  emitUsingAddress: true
+  # Emit values using human readable group address names
+  emitUsingName: true

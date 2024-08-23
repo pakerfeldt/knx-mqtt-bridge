@@ -9,6 +9,7 @@ const ets = require('./ets-xml');
 const config = require('./config.js').parse();
 const topicPrefix = config.mqtt.topicPrefix + (config.mqtt.topicPrefix.endsWith('/') ? '' : '/');
 const gadRegExp = new RegExp((topicPrefix || 'knx/') + '(\\d+)\/(\\d+)\/(\\d+)\/(\\w+)(\/([\\w\\d]+))?');
+const gadNameRegExp = new RegExp((topicPrefix || 'knx/') + '([^\/]+)\/([^\/]+)\/([^\/]+)\/(\\w+)(\/([\\w\\d]+))?');
 const logger = createLogger({
   level: config.loglevel,
   format: format.combine(
@@ -30,9 +31,13 @@ const logger = createLogger({
 });
 const messageType = require('./messagetype.js').parse(config.messageType, logger);
 
-let groupAddresses = ets.parse(config.knx.etsExport, logger) || {};
+let {groupAddresses, groupNames} = ets.parse(config.knx.etsExport, logger) || {};
 
 let mqttClient  = mqtt.connect(config.mqtt.url, config.mqtt.options);
+
+mqttClient.on('error', function(err) {
+    logger.error("MQTT error %s", err)
+})
 
 mqttClient.on('connect', function () {
   logger.info('MQTT connected');
@@ -42,10 +47,23 @@ mqttClient.on('connect', function () {
 
 mqttClient.on('message', function (topic, message) {
     logger.silly('Received MQTT message on topic %s with value %s', topic, message);
+    let gad = ""
+    let command = undefined
+    let dpt = undefined
     let gadArray = gadRegExp.exec(topic);
-    let gad = gadArray[1] + "/" + gadArray[2] + "/" + gadArray[3];
-    let command = gadArray[4];
-    let dpt = gadArray.length >= 7 ? gadArray[6] : undefined;
+    if (gadArray) {
+        gad = gadArray[1] + "/" + gadArray[2] + "/" + gadArray[3];
+        command = gadArray[4];
+        dpt = gadArray.length >= 7 ? gadArray[6] : undefined;
+    } else {
+        let names = gadNameRegExp.exec(topic)
+        if (!names) return
+        let humanReadable = groupNames[`${names[1]}/${names[2]}/${names[3]}`]
+        gad = `${humanReadable.main}/${humanReadable.middle}/${humanReadable.name}`
+        command = names[4];
+        dpt = names.length >= 7 ? names[6] : undefined;
+    }
+
     let parsedMessage;
     try {
         parsedMessage = message === undefined ? null : JSON.parse(message.toString('utf8'));
@@ -113,9 +131,17 @@ let onKnxEvent = function (evt, dst, value, gad) {
       new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
       evt, dst, mqttMessage);
 
-    mqttClient.publish(topicPrefix + dst, mqttMessage, {
-        retain: config.mqtt.retain || false
-    });
+    if (config.mqtt.emitUsingAddress) {
+      mqttClient.publish(topicPrefix + dst, mqttMessage, {
+          retain: config.mqtt.retain || false
+      });            
+    }
+
+    if (gad !== undefined && config.mqtt.emitUsingName) {
+      mqttClient.publish(`${topicPrefix}${gad.main}/${gad.middle}/${gad.name}`, mqttMessage, {
+          retain: config.mqtt.retain || false
+      }); 
+    }
 }
 
 let knxConnection = knx.Connection(Object.assign({
