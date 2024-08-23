@@ -12,7 +12,7 @@ ignoreUnknownGroupAddresses: false
 
 knx:
   # ETS exported group addresses
-  etsExport: 'knx.xml'
+  etsExport: '/config/knx.xml'
 
   # Configuration passed to the KNX library
   options:
