@@ -1,5 +1,5 @@
 # NOTE: I have migrated to [knx-mqtt](https://github.com/pakerfeldt/knx-mqtt)
-Long story short. I've built a new KNX / MQTT bridge in Go, simply because I enjoy writing in that language. I was actively using knx-mqtt-bridge myself but have now transitioned to this new version. Configuration is very similar and while it has some new features it's mostly same-same. However, if you rely on TLS for MQTT, migration is a no-go since that is yet to be implemented. I don't plan on maintaining this JS version any longer. Any further development will happen on [knx-mqtt](https://github.com/pakerfeldt/knx-mqtt) since that is the version I use myself.
+Long story short. I've built a new KNX / MQTT bridge in Go, simply because I enjoy writing in that language. I was actively using knx-mqtt-bridge myself but have now transitioned to this new version. Configuration is very similar and while it has some new features it's mostly same-same. I don't plan on maintaining this JS version any longer. Any further development will happen on [knx-mqtt](https://github.com/pakerfeldt/knx-mqtt) since that is the version I use myself.
 
 If you want to try it out, please let me know what you think. If there's anything stopping you from migrating or causing issues, raise a ticket [here](https://github.com/pakerfeldt/knx-mqtt/issues) and I'll see what I can do.
 
