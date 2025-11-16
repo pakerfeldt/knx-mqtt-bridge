@@ -7,7 +7,7 @@
     "mqtt"
   ],
   "dependencies": {
-    "js-yaml": "3.13.1",
+    "js-yaml": "4.1.1",
     "knx": ">=2.5.4",
     "mqtt": "5.0.0",
     "winston": "3.0.0",
